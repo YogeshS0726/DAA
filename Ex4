@@ -1,0 +1,109 @@
+package myjava;
+import java.util.Scanner;
+
+public class HeapSort {
+    private static void heapify(int[] arr, int n, int i) {
+        int largest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+        if (left < n && arr[left] > arr[largest]) {
+            largest = left;
+        }
+        if (right < n && arr[right] > arr[largest]) {
+            largest = right;
+        }
+        if (largest != i) {
+            int swap = arr[i];
+            arr[i] = arr[largest];
+            arr[largest] = swap;
+            heapify(arr, n, largest);
+        }
+    }
+    private static void buildHeap(int[] arr, int n) {
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(arr, n, i);
+        }
+        System.out.println("After building heap (transform step):");
+        printArray(arr);
+    }
+    private static void heapSort(int[] arr) {
+        int n = arr.length;
+        buildHeap(arr, n);
+        for (int i = n - 1; i > 0; i--) {
+                int temp = arr[0];
+            arr[0] = arr[i];
+            arr[i] = temp;
+            System.out.println("After moving max element to index " + i + ":");
+            printArray(arr);
+            heapify(arr, i, 0);
+            System.out.println("After heapify on reduced heap size " + i + ":");
+            printArray(arr);
+        }
+    }
+    private static void printArray(int[] arr) {
+        for (int val : arr) {
+            System.out.print(val + " ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the number of elements (n): ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        System.out.println("Enter " + n + " elements:");
+        for(int i = 0; i < n; i++){
+            arr[i] = sc.nextInt();
+        }
+        System.out.println("Original array:");
+        printArray(arr);
+        heapSort(arr);
+        System.out.println("Sorted array:");
+        printArray(arr);
+        sc.close();
+    }
+}
+
+OUTPUT:
+
+
+Enter the number of elements (n): 7
+Enter 7 elements:
+24
+56
+78
+45
+13
+60
+58
+Original array:
+24 56 78 45 13 60 58
+After building heap (transform step):
+78 56 60 45 13 24 58
+After moving max element to index 6:
+58 56 60 45 13 24 78
+After heapify on reduced heap size 6:
+60 56 58 45 13 24 78
+After moving max element to index 5:
+24 56 58 45 13 60 78
+After heapify on reduced heap size 5:
+58 56 24 45 13 60 78
+After moving max element to index 4:
+13 56 24 45 58 60 78
+After heapify on reduced heap size 4:
+56 45 24 13 58 60 78
+After moving max element to index 3:
+13 45 24 56 58 60 78
+After heapify on reduced heap size 3:
+45 13 24 56 58 60 78
+After moving max element to index 2:
+24 13 45 56 58 60 78
+After heapify on reduced heap size 2:
+24 13 45 56 58 60 78
+After moving max element to index 1:
+13 24 45 56 58 60 78
+After heapify on reduced heap size 1:
+13 24 45 56 58 60 78
+Sorted array:
+13 24 45 56 58 60 78
