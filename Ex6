@@ -1,0 +1,112 @@
+package myjava;
+import java.util.Scanner;
+public class floydWarshall {
+    final static int INF = 99999;
+    public static void FloydWarshall(int[][] graph) {
+        int V = graph.length;
+        int[][] dist = new int[V][V];
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                dist[i][j] = graph[i][j];
+            }
+        }
+        System.out.println("Initial distance matrix:");
+        printMatrix(dist);
+        for (int k = 0; k < V; k++) {
+            System.out.println("\nIteration with intermediate vertex " + k + ":");
+            for (int i = 0; i < V; i++) {
+                for (int j = 0; j < V; j++) {
+                    if (dist[i][k] != INF && dist[k][j] != INF &&
+                        dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+            printMatrix(dist);
+        }
+        System.out.println("\nFinal shortest distances between every pair of vertices:");
+        printMatrix(dist);
+    }
+    public static void printMatrix(int[][] matrix) {
+        int V = matrix.length;
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (matrix[i][j] == INF)
+                    System.out.print("INF ");
+                else
+                    System.out.print(matrix[i][j] + "   ");
+            }
+            System.out.println();
+        }
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the number of vertices: ");
+        int V = sc.nextInt();
+        int[][] graph = new int[V][V];
+        System.out.println("Enter the adjacency matrix (use " + INF + " for no edge):");
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                graph[i][j] = sc.nextInt();
+            }
+        }
+        FloydWarshall(graph);
+        sc.close();
+    }
+}
+
+Output
+
+Enter the number of vertices: 4
+Enter the adjacency matrix (use 99999 for no edge):
+99999
+9
+10
+45
+6
+99999
+09
+29
+13
+17
+26
+46
+105
+89
+97
+90
+Initial distance matrix:
+INF 9   10   45
+6   INF 9   29
+13   17   26   46
+105   89   97   90
+
+Iteration with intermediate vertex 0:
+INF 9   10   45
+6   15   9   29
+13   17   23   46
+105   89   97   90
+
+Iteration with intermediate vertex 1:
+15   9   10   38
+6   15   9   29
+13   17   23   46
+95   89   97   90
+
+Iteration with intermediate vertex 2:
+15   9   10   38
+6   15   9   29
+13   17   23   46
+95   89   97   90
+
+Iteration with intermediate vertex 3:
+15   9   10   38
+6   15   9   29
+13   17   23   46
+95   89   97   90
+
+Final shortest distances between every pair of vertices:
+15   9   10   38
+6   15   9   29
+13   17   23   46
+95   89   97   90
