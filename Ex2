@@ -1,0 +1,167 @@
+package search;
+import java.util.Scanner;
+public class StringSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the main string (can include spaces):");
+        String text = scanner.nextLine();
+        System.out.println("Enter the pattern string (can include spaces):");
+        String pattern = scanner.nextLine();
+        int comparisons = 0;
+        int alignments = 0;
+        int n = text.length();
+        int m = pattern.length();
+        boolean found = false;
+        System.out.println();
+        for (int i = 0; i <= n - m; i++) {
+            alignments++;
+            System.out.println("Alignment " + alignments + " (text index " + i + "):");
+            System.out.println(text);
+            for (int k = 0; k < i; k++) {
+                System.out.print(" ");
+            }
+            System.out.println(pattern);
+            comparisons++;
+            if (text.charAt(i) != pattern.charAt(0)) {
+                for (int j = 0; j < i; j++) {
+                    System.out.print(" ");
+                }
+                System.out.println("X" + " ".repeat(m - 1));
+                System.out.println();
+                continue;
+            }
+            for (int j = 0; j < i; j++) {
+                System.out.print(" ");
+            }
+            boolean matched = true;
+            System.out.print("|");
+            for (int j = 1; j < m; j++) {
+                comparisons++;
+                if (text.charAt(i + j) == pattern.charAt(j)) {
+                    System.out.print("|");
+                } else {
+                    System.out.print("X");
+                    matched = false;
+                }
+            }
+            System.out.println();
+            if (matched) {
+                System.out.println("Pattern found at index " + i + "\n");
+                found = true;
+                break;
+            } else {
+                System.out.println();
+            }
+        }
+        if (!found) {
+            System.out.println("Pattern not found in the text.");
+        }
+        System.out.println("Total alignments tried: " + alignments);
+        System.out.println("Total character comparisons: " + comparisons);
+        scanner.close();
+    }
+}
+
+OUTPUT:
+
+Enter the main string (can include spaces):
+Man have a fish
+Enter the pattern string (can include spaces):
+have
+
+Alignment 1 (text index 0):
+Man have a fish
+have
+X
+
+Alignment 2 (text index 1):
+Man have a fish
+ have
+ X
+
+Alignment 3 (text index 2):
+Man have a fish
+  have
+  X
+
+Alignment 4 (text index 3):
+Man have a fish
+   have
+   X
+
+Alignment 5 (text index 4):
+Man have a fish
+    have
+    ||||
+Pattern found at index 4
+
+Total alignments tried: 5
+Total character comparisons: 8
+
+[24bcs112@mepcolinux Ex2]$cat ex2b.txt
+package distance;
+import java.util.Scanner;
+class Point {
+    float x;
+    float y;
+    Point(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+public class Distance {
+    public static double calculateDistance(Point p1, Point p2) {
+        float xDiff = p1.x - p2.x;
+        float yDiff = p1.y - p2.y;
+        return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+    }
+        @SuppressWarnings("resource")
+        public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number of points (N): ");
+        int n = scanner.nextInt();
+
+        if (n < 2) {
+            System.out.println("At least two points are required to calculate the least distance.");
+            return;
+        }
+        Point[] points = new Point[n];
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter coordinates for point " + (i + 1) + " (x y): ");
+            float x = scanner.nextFloat();
+            float y = scanner.nextFloat();
+            points[i] = new Point(x, y);
+        }
+        scanner.close();
+        double minDistance = Double.MAX_VALUE;
+        int p1Index = -1;
+        int p2Index = -1;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                double distance = calculateDistance(points[i], points[j]);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    p1Index = i;
+                    p2Index = j;
+                }
+            }
+        }
+        System.out.printf("The least distance found is: %.2f%n",minDistance);
+        System.out.println("Between points: (" + points[p1Index].x + ", " + points[p1Index].y + ") and ("
+                           + points[p2Index].x + ", " + points[p2Index].y + ")");
+    }
+}
+
+OUTPUT:
+
+Enter the number of points (N): 4
+Enter coordinates for point 1 (x y): 2.44
+3.44
+Enter coordinates for point 2 (x y): 5.65
+6.54
+Enter coordinates for point 3 (x y): 1.23
+2.3
+Enter coordinates for point 4 (x y): 7.8
+9.8
+The least distance found is: 1.66
+Between points: (2.44, 3.44) and (1.23, 2.3)
