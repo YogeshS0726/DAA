@@ -1,0 +1,123 @@
+
+import java.util.*;
+class Item {
+    int id;
+    int weight, value;
+    double ratio;
+    Item(int id, int w, int v) {
+        this.id = id;
+        weight = w;
+        value = v;
+        ratio = (double) v / w;
+    }
+}
+class Node {
+    int level, value, weight;
+    double bound;
+    boolean[] taken;
+}
+public class KnapsackBB {
+    static int maxValue = 0;
+    static boolean[] bestSet;
+    static double bound(Node u, int n, int W, Item[] items) {
+        if (u.weight >= W)
+            return 0;
+        double valueBound = u.value;
+        int j = u.level + 1;
+        int totalWeight = u.weight;
+        while (j < n && totalWeight + items[j].weight <= W) {
+            totalWeight += items[j].weight;
+            valueBound += items[j].value;
+            j++;
+        }
+        if (j < n) {
+            valueBound += (W - totalWeight) * items[j].ratio;
+        }
+        return valueBound;
+    }
+    static void knapsack(int W, Item[] items, int n) {
+        Queue<Node> Q = new LinkedList<>();
+        Node u = new Node();
+        u.level = -1;
+        u.value = 0;
+        u.weight = 0;
+        u.taken = new boolean[n];
+        u.bound = bound(u, n, W, items);
+        Q.add(u);
+        bestSet = new boolean[n];
+        while (!Q.isEmpty()) {
+            u = Q.poll();
+            if (u.level == n - 1)
+                continue;
+            Node v = new Node();
+            v.level = u.level + 1;
+            v.weight = u.weight + items[v.level].weight;
+            v.value = u.value + items[v.level].value;
+            v.taken = u.taken.clone();
+            v.taken[v.level] = true;
+            if (v.weight <= W && v.value > maxValue) {
+                maxValue = v.value;
+                bestSet = v.taken.clone();
+            }
+            v.bound = bound(v, n, W, items);
+            if (v.bound > maxValue)
+                Q.add(v);
+            v = new Node();
+            v.level = u.level + 1;
+            v.weight = u.weight;
+            v.value = u.value;
+            v.taken = u.taken.clone();
+            v.bound = bound(v, n, W, items);
+            if (v.bound > maxValue)
+                Q.add(v);
+        }
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of items: ");
+        int n = sc.nextInt();
+        Item[] items = new Item[n];
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter weight and value of item " + (i + 1) + ": ");
+            int w = sc.nextInt();
+            int v = sc.nextInt();
+            items[i] = new Item(i + 1, w, v);
+        }
+        System.out.print("Enter knapsack capacity: ");
+        int W = sc.nextInt();
+        Arrays.sort(items, (a, b) -> Double.compare(b.ratio, a.ratio));
+        knapsack(W, items, n);
+        System.out.println("\nMaximum Value = " + maxValue);
+        System.out.println("\nSuitable items to include in Knapsack:");
+        for (int i = 0; i < n; i++) {
+            if (bestSet[i]) {
+                System.out.println("Item ID: " + items[i].id +
+                        " | Weight: " + items[i].weight +
+                        " | Value: " + items[i].value);
+            }
+        }
+    }
+}
+
+OUTPUT
+
+Enter number of items: 5
+Enter weight and value of item 1: 45
+23
+Enter weight and value of item 2: 12
+34
+Enter weight and value of item 3: 56
+23
+Enter weight and value of item 4: 12
+34
+Enter weight and value of item 5: 456
+342
+Enter knapsack capacity: 234
+
+Maximum Value = 114
+
+Suitable items to include in Knapsack:
+Item ID: 2 | Weight: 12 | Value: 34
+Item ID: 4 | Weight: 12 | Value: 34
+Item ID: 1 | Weight: 45 | Value: 23
+Item ID: 3 | Weight: 56 | Value: 23
